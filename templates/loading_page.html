@@ -140,8 +140,7 @@
   <div style="text-align:center; transform:translateY(-50%)">
     <img src="/static/KIPP_LOGO.png" alt="KIPP" height=100% width=100% style="margin-top:50%"></img><br>
   </div>
-  <script src="static/connection.js"></script>
-  <div class="loading bar" style="text-align:center;margin-top:-25%">
+  <div class="loading bar" style="text-align:center;margin-top:-35%">
     <div></div>
     <div></div>
     <div></div>
@@ -151,6 +150,24 @@
     <div></div>
     <div></div>
   </div>
+  <script>
+
+    xhttp = new XMLHttpRequest();
+    var url = new URL(window.location.href);
+    var id_hash = url.searchParams.get("id_hash");
+    xhttp.open("GET", "/dashboard?id_hash="+id_hash, true);
+    xhttp.timeout=1000;
+    xhttp.send();
+    xhttp.onreadystatechange = function (){
+      if (this.readyState == 4){
+        if (this.status == 200){
+          document.open();
+          document.write(this.response);
+          document.close();
+        }
+      }
+    }
+  </script>
 </body>
 
 </html>

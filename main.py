@@ -1,6 +1,5 @@
 import flask
 import os
-import hashlib
 from server import Server
 
 servers={}
@@ -15,8 +14,8 @@ app=flask.Flask(__name__)
 
 @app.route("/")
 def landing_page():
-    if flask.request.args["key"] not in servers.keys():
-        servers[flask.request.args["key"]]=Server()
+    if flask.request.args["id_hash"] not in servers.keys():
+        servers[flask.request.args["id_hash"]]=Server()
     return flask.render_template('loading_page.html')
 
 @app.route("/dashboard")
@@ -25,7 +24,7 @@ def dashboard():
 
 @app.route("/heartbeat")
 def heartbeat():
-    id_hash=flask.request.args["key"]
+    id_hash=flask.request.args["id_hash"]
     global servers
     server=servers[id_hash]
     queue_str=""
@@ -36,7 +35,7 @@ def heartbeat():
 
 @app.route("/currently_playing_information")
 def currently_playing():
-    id_hash=flask.request.args["key"]
+    id_hash=flask.request.args["id_hash"]
     global servers
     server=servers[id_hash]
     if flask.request.method=="GET":
@@ -54,7 +53,7 @@ def currently_playing():
 
 @app.route("/song_queue")
 def song_queue():
-    id_hash=flask.request.args["key"]
+    id_hash=flask.request.args["id_hash"]
     global servers
     server=servers[id_hash]
     if flask.request.method=="GET":
@@ -68,7 +67,7 @@ def song_queue():
 
 @app.route("/playlist_names")
 def playlists():
-    id_hash=flask.request.args["key"]
+    id_hash=flask.request.args["id_hash"]
     global servers
     server=servers[id_hash]
     if flask.request.method=="GET":
