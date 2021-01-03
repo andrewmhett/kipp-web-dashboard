@@ -13,6 +13,11 @@
       padding:0px;
       vertical-align:bottom;
     }
+
+    table{
+      table-layout:fixed;
+      width:100%;
+    }
     .song_link {
       color: #1099d7;
       background-color: transparent;
@@ -53,26 +58,37 @@
 <body bgcolor="000000#" style="overflow-y:hidden;height:">
   <div style="text-align:center">
     <img src="/static/KIPP_LOGO.png" alt="KIPP" width="80%"></img><br>
-    <div>
-      <table class=embed style="margin:auto; text-align: center;display:inline-block;box-sizing:border-box;width:70%;overflow:hidden">
-        <tr style="overflow:hidden">
-          <td style="width:10%border-right:1px solid white">
-            <span class=dark_embed>#1</span>
+    <div style="text-align:center;">
+      <table style="width:80%;text-align:left;display:inline-block;">
+        <tr>
+          <td>
+            <span style="font-size:3vh;text-align:left;">Queue</span>
           </td>
-          <td style="text-align:left;border-left:1px solid white;border-right:1px solid white;width:100%;">
-            <a href="https://www.youtube.com/watch?v=TS-G4UQTfUo" class=song_link style="overflow:hidden;">Caravan</span>
-          </td>
-          <td style="text-align:center;width:auto">
-            <table style="margin-left:1%;">
-              <tr>
-                <td>
-                  <button class=song_button style="background-color:red;">X</button>
+        </tr>
+        <tr>
+          <td>
+            <table class=embed style="margin-top:1vh; text-align: center;box-sizing:border-box;width:100%;overflow:hidden;display:inline-block;">
+              <tr style="overflow:hidden">
+                <td style="width:2%">
+                  <span class=dark_embed>#1</span>
                 </td>
-                <td>
-                  <button class=song_button style="background-color:DarkGray;">🠕</button>
+                <td style="text-align:left;border-left:1px solid white;border-right:1px solid white;width:80%;">
+                  <a href="https://www.youtube.com/watch?v=TS-G4UQTfUo" class=song_link style="overflow:hidden;">Caravan</span>
                 </td>
-                <td>
-                  <button class=song_button style="background-color:DarkGray;">🠗</button>
+                <td style="text-align:center;width:10%;min-width:10vh;">
+                  <table style="margin-left:1%;">
+                    <tr>
+                      <td>
+                        <button class=song_button style="background-color:red;">X</button>
+                      </td>
+                      <td>
+                        <button class=song_button style="background-color:DarkGray;">▲</button>
+                      </td>
+                      <td>
+                        <button class=song_button style="background-color:DarkGray;">▼</button>
+                      </td>
+                    </tr>
+                  </table>
                 </td>
               </tr>
             </table>
