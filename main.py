@@ -21,13 +21,18 @@ app=flask.Flask(__name__)
 
 @app.route("/")
 def landing_page():
-    if flask.request.args["id_hash"] not in servers.keys():
-        servers[flask.request.args["id_hash"]]=Server()
+    try:
+        if flask.request.args["id_hash"] not in servers.keys():
+            servers[flask.request.args["id_hash"]]=Server()
+    except KeyError:
+        pass
     return flask.render_template('loading_page.html')
 
 @app.route("/dashboard")
 def dashboard():
-    return flask.render_template('dashboard.html')
+    if flask.request.args["id_hash"] != "null":
+        return flask.render_template('dashboard.html')
+    return "No server hash specified",404
 
 @app.route("/heartbeat")
 def heartbeat():
