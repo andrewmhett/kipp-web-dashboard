@@ -28,10 +28,16 @@ def landing_page():
         pass
     return flask.render_template('loading_page.html')
 
-@app.route("/dashboard")
-def dashboard():
+@app.route("/dashboard_desktop")
+def dashboard_desktop():
     if flask.request.args["id_hash"] != "null":
-        return flask.render_template('dashboard.html')
+        return flask.render_template('dashboard_desktop.html')
+    return "No server hash specified",404
+
+@app.route("/dashboard_mobile")
+def dashboard_mobile():
+    if flask.request.args["id_hash"] != "null":
+        return flask.render_template('dashboard_mobile.html')
     return "No server hash specified",404
 
 @app.route("/heartbeat")
