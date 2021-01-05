@@ -100,7 +100,7 @@ def song_queue():
                 for song_pair in flask.request.data.decode().split(",\n"):
                     if len(song_pair)>0:
                         song, link = song_pair.split(",->")
-                        server.song_queue.append({"name":song,"link":link})
+                        server.song_queue.append("{"+'"name":"{0}","link":"{1}"'.format(song,link)+"}")
                 return "Authentication Succeeded",200
         return "Authentication Failed",401
 

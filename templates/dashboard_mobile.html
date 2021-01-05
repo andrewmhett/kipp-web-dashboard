@@ -2,6 +2,7 @@
 <html lang='en'>
 
 <head>
+  <meta id="platform-tag" content="mobile">
   <style>
     .song_button{
       border-radius:2px;
@@ -69,50 +70,10 @@
         </tr>
         <tr>
           <td>
-            <table class=embed style="margin-top:1vh; text-align: center;box-sizing:border-box;width:100%;overflow:hidden;display:inline-block;">
-              <tr style="overflow:hidden">
-                <td style="width:2%">
-                  <span class=dark_embed style="margin-right:5px;">#1</span>
-                </td>
-                <td style="text-align:left;border-left:1px solid white;border-right:1px solid white;width:80%;">
-                  <a href="https://www.youtube.com/watch?v=TS-G4UQTfUo" class=song_link style="overflow:hidden;">Caravan</span>
-                </td>
-                <td style="text-align:center;min-width:200px;width:0%;">
-                  <table style="margin-left:1%;">
-                    <tr>
-                      <td>
-                        <button class=song_button style="background-color:red;min-">X</button>
-                      </td>
-                      <td>
-                        <button class=song_button style="background-color:DarkGray;">▲</button>
-                      </td>
-                      <td>
-                        <button class=song_button style="background-color:DarkGray;">▼</button>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-                <td style="width:2%">
-                  <span class=dark_embed style="margin-right:5px;">#2</span>
-                </td>
-                <td style="text-align:left;border-left:1px solid white;border-right:1px solid white;width:80%;">
-                  <a href="https://www.youtube.com/watch?v=vmDDOFXSgAs" class=song_link style="overflow:hidden;">Take Five</span>
-                </td>
-                <td style="text-align:center;min-width:200px;width:0%;">
-                  <table style="margin-left:1%;">
-                    <tr>
-                      <td>
-                        <button class=song_button style="background-color:red;min-">X</button>
-                      </td>
-                      <td>
-                        <button class=song_button style="background-color:DarkGray;">▲</button>
-                      </td>
-                      <td>
-                        <button class=song_button style="background-color:DarkGray;">▼</button>
-                      </td>
-                    </tr>
-                  </table>
+            <table id="queue_table" class=embed style="margin-top:1vh; text-align: center;box-sizing:border-box;width:100%;overflow:hidden;display:inline-block;">
+              <tr>
+                <td>
+                  <span class=dark_embed>No Songs in Queue</span>
                 </td>
               </tr>
             </table>
@@ -121,6 +82,7 @@
       </table>
     </div>
   </div>
+  <script src="/static/poll_data&v=1.1.js"></script>
 </body>
 
 </html>
