@@ -2,16 +2,28 @@ import flask
 import os
 from server import Server
 import hashlib
+import datetime
 
 servers={}
+
+ACTIONS=[
+    "CLEAR_QUEUE",
+    "SHUFFLE_QUEUE",
+    "MOVE_SONG",
+    "REMOVE_SONG"
+]
 
 def authenticate(signature,data):
     from pubkey import e, n
     from hashlib import sha512
-    hash=int.from_bytes(hashlib.sha512(data).digest(),byteorder='big')
-    derived_hash=pow(int(signature),e,n)
-    if derived_hash==hash:
-        return 0
+    hour=int(datetime.datetime.strftime(datetime.datetime.utcnow(),"%H"))
+    minute=int(datetime.datetime.strftime(datetime.datetime.utcnow(),"%M"))
+    for i in range(2):
+        data_str=(str(hour)+":"+str(minute-i+1))+data.decode()
+        hash=int.from_bytes(hashlib.sha512(data_str.encode("utf-8")).digest(),byteorder='big')
+        derived_hash=pow(int(signature),e,n)
+        if derived_hash==hash:
+            return 0
     return 1
 
 '''
@@ -47,16 +59,34 @@ def dashboard_mobile():
         return flask.render_template('dashboard_mobile.html')
     return "No server hash specified",404
 
-@app.route("/heartbeat")
-def heartbeat():
+@app.route("/action_queue",methods=['GET','POST'])
+def action_queue():
     id_hash=flask.request.args["id_hash"]
     global servers
-    server=servers[id_hash]
-    queue_str=""
-    for action in server.action_queue:
-        queue_str.append(action+",\n")
-    action_queue=[]
-    return queue_str
+    if flask.request.method=="GET":
+        server=servers[id_hash]
+        queue_str="<br>".join(server.action_queue)
+        return queue_str
+    else:
+        if "signature" in flask.request.args.keys():
+            auth_code=authenticate(flask.request.args["signature"],flask.request.data)
+            if auth_code==0:
+                ensure_existence()
+                server=servers[id_hash]
+                server.action_queue=[]
+                return "Authentication Succeeded",200
+            else:
+                return "Authentication Failed",401
+        else:
+            server=servers[id_hash]
+            try:
+                for action in ACTIONS:
+                    if flask.request.data.decode().startswith(action):
+                        server.action_queue.append(flask.request.data.decode())
+                        break
+            except IndexError:
+                return 500,"Invalid action index"
+            return "Action posted",200
 
 @app.route("/currently_playing_information",methods = ['GET', 'POST'])
 def currently_playing():

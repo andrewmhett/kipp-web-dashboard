@@ -68,19 +68,23 @@ function update_queue(queue){
     remove_song_button.innerHTML='X';
     remove_song_button.classList.add('song_button');
     remove_song_button.style["background-color"]="red";
+    remove_song_button.id="remove_song_button-"+i;
     button_row.insertCell(0).appendChild(remove_song_button);
     var move_up_button = document.createElement('button');
     move_up_button.innerHTML='▲';
     move_up_button.classList.add('song_button');
     move_up_button.style["background-color"]="DarkGray";
+    move_up_button.id="move_up_button-"+i;
     button_row.insertCell(1).appendChild(move_up_button);
     var move_down_button = document.createElement('button');
     move_down_button.innerHTML='▼';
     move_down_button.classList.add('song_button');
     move_down_button.style["background-color"]="DarkGray";
+    move_down_button.id="move_down_button-"+i;
     button_row.insertCell(2).appendChild(move_down_button);
     button_cell.appendChild(button_table);
   }
+  update_buttons();
 }
 
 var queryString = window.location.search;
@@ -101,4 +105,4 @@ function poll_queue(){
   }
 }
 
-window.setTimeout(poll_queue,500);
+poll_queue();
