@@ -1,9 +1,9 @@
-var id_hash = new URLSearchParams(queryString).get("id_hash");
 var active_button=null;
 var initial_button_color="";
 
 function post_action(action){
   var xhttp = new XMLHttpRequest();
+  var id_hash = new URLSearchParams(queryString).get("id_hash");
   xhttp.open("POST", "/action_queue?id_hash="+id_hash, true);
   xhttp.timeout = 1000;
   xhttp.send(action);
