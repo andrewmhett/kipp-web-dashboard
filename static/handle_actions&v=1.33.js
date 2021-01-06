@@ -72,7 +72,6 @@ function update_buttons(){
             var button_el = (event.target || event.srcElement);
             active_button=button_el;
             initial_button_color="#b9bbbe";
-            document.getElementById("shuffle_image").style.border="2px solid white";
             button_el.style["background-color"]="#292b2e";
             shuffle_queue_action();
           }
