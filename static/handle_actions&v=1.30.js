@@ -9,11 +9,7 @@ function post_action(action){
   xhttp.send(action);
   active_button.style.border="2px solid white";
   var buttons = document.getElementsByClassName("song_button");
-  for (var i=0;i<buttons.length;i++){
-    if (typeof(buttons[i]) !== undefined){
-      buttons[i].disabled=true;
-    }
-  }
+  active_button.disabled=true;
   xhttp.onreadystatechange = function() {
     if (this.readyState === 4) {
       if (this.status !== 200) {
@@ -27,12 +23,8 @@ function post_action(action){
           document.getElementById("shuffle_image").style.border="0";
           document.getElementById("shuffle_image").style["background_color"]="#b9bbbe";
         }
+        active_button.disabled=false;
         active_button=null;
-        for (var i=0;i<buttons.length;i++){
-          if (typeof(buttons[i]) !== undefined){
-            buttons[i].disabled=false;
-          }
-        }
       }
     }
   }
