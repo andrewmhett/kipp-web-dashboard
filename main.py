@@ -16,12 +16,15 @@ ACTIONS=[
 def authenticate(signature,data):
     from pubkey import e, n
     from hashlib import sha512
-    hour=int(datetime.datetime.strftime(datetime.datetime.utcnow(),"%H"))
+    hour=datetime.datetime.strftime(datetime.datetime.utcnow(),"%H")
     minute=int(datetime.datetime.strftime(datetime.datetime.utcnow(),"%M"))
+    derived_hash=pow(int(signature),e,n)
     for i in range(2):
-        data_str=(str(hour)+":"+str(minute-i+1))+data.decode()
+        minute=str(minute-i)
+        if len(minute)==1:
+            minute="0"+minute
+        data_str=(hour+":"+minute)+data.decode()
         hash=int.from_bytes(hashlib.sha512(data_str.encode("utf-8")).digest(),byteorder='big')
-        derived_hash=pow(int(signature),e,n)
         if derived_hash==hash:
             return 0
     return 1
