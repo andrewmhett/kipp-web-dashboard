@@ -28,7 +28,7 @@ function update_buttons(){
       else if (buttons[i].id.startsWith("move_down_button")){
         buttons[i].onclick=function(event){
           var button_el = (event.target || event.srcElement);
-          var index = parseInt(buttons_el.id.split("move_down_button-")[1]);
+          var index = parseInt(button_el.id.split("move_down_button-")[1]);
           move_song_action(index,index+1);
         }
       }
