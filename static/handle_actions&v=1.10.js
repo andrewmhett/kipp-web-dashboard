@@ -2,10 +2,18 @@ var id_hash = new URLSearchParams(queryString).get("id_hash");
 
 function post_action(action){
   var xhttp = new XMLHttpRequest();
-  window.setTimeout(poll_queue, 500);
   xhttp.open("POST", "/action_queue?id_hash="+id_hash, true);
   xhttp.timeout = 1000;
   xhttp.send(action);
+  xhttp.onreadystatechange = function() {
+    if (this.readyState === 4) {
+      if (this.status !== 200) {
+        window.setTimeout(function(){
+          post_action(action)
+        },100);
+      }
+    }
+  }
 }
 
 function update_buttons(){
