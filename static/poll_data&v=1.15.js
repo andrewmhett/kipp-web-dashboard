@@ -92,7 +92,7 @@ var id_hash = new URLSearchParams(queryString).get("id_hash");
 
 function poll_queue(){
   var xhttp = new XMLHttpRequest();
-  window.setTimeout(poll_queue, 200);
+  window.setTimeout(poll_queue, 500);
   xhttp.open("GET", "/song_queue?id_hash="+id_hash, true);
   xhttp.timeout = 1000;
   xhttp.send();
