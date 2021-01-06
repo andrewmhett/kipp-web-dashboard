@@ -7,7 +7,6 @@ function post_action(action){
   xhttp.open("POST", "/action_queue?id_hash="+id_hash, true);
   xhttp.timeout = 1000;
   xhttp.send(action);
-  active_button.style.border="2px solid white";
   var buttons = document.getElementsByClassName("song_button");
   active_button.disabled=true;
   xhttp.onreadystatechange = function() {
@@ -18,9 +17,7 @@ function post_action(action){
         },10);
       }else{
         active_button.style["background-color"]=initial_button_color;
-        active_button.style["border"]="0";
         if (active_button.id === "shuffle_queue_button"){
-          document.getElementById("shuffle_image").style.border="0";
           document.getElementById("shuffle_image").style["background_color"]="#b9bbbe";
         }
         active_button.disabled=false;
