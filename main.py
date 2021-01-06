@@ -20,10 +20,10 @@ def authenticate(signature,data):
     minute=int(datetime.datetime.strftime(datetime.datetime.utcnow(),"%M"))
     derived_hash=pow(int(signature),e,n)
     for i in range(2):
-        minute=str(minute-i)
-        if len(minute)==1:
-            minute="0"+minute
-        data_str=(hour+":"+minute).encode('utf-8')+data
+        minute_str=str(minute-i)
+        if len(minute_str)==1:
+            minute_str="0"+minute_str
+        data_str=(hour+":"+minute_str).encode('utf-8')+data
         hash=int.from_bytes(hashlib.sha512(data_str).digest(),byteorder='big')
         if derived_hash==hash:
             return 0
