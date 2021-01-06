@@ -23,8 +23,8 @@ def authenticate(signature,data):
         minute=str(minute-i)
         if len(minute)==1:
             minute="0"+minute
-        data_str=(hour+":"+minute)+data.decode()
-        hash=int.from_bytes(hashlib.sha512(data_str.encode("utf-8")).digest(),byteorder='big')
+        data_str=(hour+":"+minute).encode('utf-8')+data
+        hash=int.from_bytes(hashlib.sha512(data_str).digest(),byteorder='big')
         if derived_hash==hash:
             return 0
     return 1
