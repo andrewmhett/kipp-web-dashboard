@@ -66,6 +66,7 @@ def dashboard_mobile():
 def action_queue():
     id_hash=flask.request.args["id_hash"]
     global servers
+    ensure_existence()
     if flask.request.method=="GET":
         server=servers[id_hash]
         queue_str="<br>".join(server.action_queue)
