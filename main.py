@@ -3,6 +3,7 @@ import os
 from server import Server
 import hashlib
 import datetime
+import json
 
 servers={}
 
@@ -23,7 +24,7 @@ def authenticate(signature,data):
         minute_str=str(minute-i)
         if len(minute_str)==1:
             minute_str="0"+minute_str
-        data_str=((hour+":"+minute_str)+data.decode()).encode('utf-8')
+        data_str=((hour+":"+minute_str)+data.decode('latin1')).encode('latin1')
         hash=int.from_bytes(hashlib.sha512(data_str).digest(),byteorder='big')
         if derived_hash==hash:
             return 0
@@ -47,7 +48,6 @@ def ensure_existence():
 
 @app.route("/")
 def landing_page():
-    ensure_existence()
     return flask.render_template('loading_page.html')
 
 @app.route("/dashboard_desktop")
@@ -92,17 +92,14 @@ def action_queue():
                 return 500,"Invalid action index"
             return "Action posted",200
 
-@app.route("/currently_playing_information",methods = ['GET', 'POST'])
+@app.route("/current_song",methods = ['GET', 'POST'])
 def currently_playing():
     id_hash=flask.request.args["id_hash"]
     global servers
     if flask.request.method=="GET":
         server=servers[id_hash]
-        ret_json={
-            "current_name":server.current_song,
-            "seconds_elapsed:":server.seconds_elapsed,
-            "total_length":server.length
-        }
+        ret_json="{"+'"title":"{0}","link":"{1}","seconds_elapsed":{2},"total_length":{3}'.format(
+        server.current_song,server.current_song_link,server.seconds_elapsed,server.length)+"}"
         return str(ret_json)
     else:
         if "signature" in flask.request.args.keys():
@@ -110,9 +107,17 @@ def currently_playing():
             if auth_code==0:
                 ensure_existence()
                 server=servers[id_hash]
-                server.current_song=flask.request.json["current_name"]
-                server.seconds_elapsed=flask.request.json["seconds_elapsed"]
-                server.length=flask.request.json["total_length"]
+                if len(flask.request.data)==0:
+                    server.current_song=""
+                    server.current_song_link=""
+                    server.seconds_elapsed=0
+                    server.length=0
+                else:
+                    current_song_json=json.loads(flask.request.data.decode('latin1'))
+                    server.current_song=current_song_json["current_name"]
+                    server.current_song_link=current_song_json["current_link"]
+                    server.seconds_elapsed=current_song_json["seconds_elapsed"]
+                    server.length=current_song_json["total_length"]
                 return "Authentication Succeeded",200
         return "Authentication Failed",401
 
@@ -131,7 +136,7 @@ def song_queue():
                 ensure_existence()
                 server=servers[id_hash]
                 server.song_queue=[]
-                for song_pair in flask.request.data.decode().split(",\n"):
+                for song_pair in flask.request.data.decode('latin1').split(",\n"):
                     if len(song_pair)>0:
                         song, link = song_pair.split(",->")
                         server.song_queue.append("{"+'"name":"{0}","link":"{1}"'.format(song,link)+"}")
