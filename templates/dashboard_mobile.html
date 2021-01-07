@@ -4,6 +4,18 @@
 <head>
   <meta id="platform-tag" content="mobile">
   <style>
+    ::-webkit-scrollbar{
+      height: 8px;
+      width: 8px;
+      background-color: #202225;
+      border-radius:10px;
+    }
+    ::-webkit-scrollbar-thumb{
+      height: 8px;
+      width: 8px;
+      background-color:white;
+      border-radius:10px;
+    }
     .song_button{
       border-radius:2px;
       outline:none;
@@ -31,13 +43,19 @@
       font-family:Verdana;
       font-weight:lighter;
       margin-left:1%;
-      font-size:40px;
+      font-size:35px;
+      white-space:nowrap;
+      float:left;
+      max-width:100%;
+      overflow:hidden;
+      overflow-x:scroll;
+      -webkit-overflow-scrolling: touch;
     }
     td {
       border-bottom: 0px;
       font-size:25px;
       height:30px;
-      vertical-align:center;
+      vertical-align:middle;
     }
     span {
       color: white;
@@ -55,6 +73,13 @@
       border-radius: 5px;
       font-size:35px;
     }
+    .progress_bar {
+      width:450px;
+      height:30px;
+      background-color:#202225;
+      border-radius:10px;
+      overflow:hidden;
+    }
   </style>
 </head>
 
@@ -62,7 +87,8 @@
   <div style="text-align:center">
     <img src="/static/KIPP_LOGO.png" alt="KIPP" width="80%"></img><br>
     <div style="text-align:center;">
-      <table style="width:80%;text-align:left;display:inline-block;">
+      <table id="currently_playing_table" class=embed style="background-color:black; table-layout:fixed;margin-top:1vh; text-align: center;box-sizing:border-box;width:460px;height:auto;overflow:hidden;display:inline-block;">
+      <table style="width:80%;text-align:left;display:inline-block;margin-top:20px;">
         <tr>
           <td>
             <span style="font-size:45px;text-align:left;">Queue</span>
@@ -93,7 +119,7 @@
     </div>
   </div>
   <script src="/static/handle_actions&v=1.33.js"></script>
-  <script src="/static/poll_data&v=1.21.js"></script>
+  <script src="/static/poll_data&v=1.72.js"></script>
 </body>
 
 </html>
