@@ -19,6 +19,10 @@ function post_action(action){
         active_button.style["background-color"]=initial_button_color;
         if (active_button.id === "shuffle_queue_button"){
           document.getElementById("shuffle_image").style["background_color"]="#b9bbbe";
+        }else if (active_button.id === "toggle_pause_button"){
+          document.getElementById("toggle_pause_image").style["background_color"]="#b9bbbe";
+        }else if (active_button.id === "skip_button"){
+          document.getElementById("skip_image").style["background_color"]="#b9bbbe";
         }
         active_button.disabled=false;
         active_button=null;
@@ -66,7 +70,7 @@ function update_buttons(){
           }
         }
       }
-      else if (buttons[i].id.startsWith("shuffle_queue_button")){
+      else if (buttons[i].id === "shuffle_queue_button"){
         buttons[i].onclick=function(){
           if (active_button === null){
             var button_el = (event.target || event.srcElement);
@@ -88,6 +92,28 @@ function update_buttons(){
           }
         }
       }
+      else if (buttons[i].id === "pause_play_button"){
+        buttons[i].onclick=function(){
+          if (active_button === null){
+            var button_el = (event.target || event.srcElement);
+            active_button=button_el;
+            initial_button_color="#b9bbbe";
+            button_el.style["background-color"]="#292b2e";
+            toggle_pause_action();
+          }
+        }
+      }
+      else if (buttons[i].id === "skip_button"){
+        buttons[i].onclick=function(){
+          if (active_button === null){
+            var button_el = (event.target || event.srcElement);
+            active_button=button_el;
+            initial_button_color="#b9bbbe";
+            button_el.style["background-color"]="#292b2e";
+            skip_action();
+          }
+        }
+      }
     }
   }
 }
@@ -106,6 +132,14 @@ function shuffle_queue_action(){
 
 function clear_queue_action(){
   post_action("CLEAR_QUEUE");
+}
+
+function toggle_pause_action(){
+  post_action("TOGGLE_PAUSE");
+}
+
+function skip_action(){
+  post_action("SKIP");
 }
 
 update_buttons();

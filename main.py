@@ -11,7 +11,10 @@ ACTIONS=[
     "CLEAR_QUEUE",
     "SHUFFLE_QUEUE",
     "MOVE_SONG",
-    "REMOVE_SONG"
+    "REMOVE_SONG",
+    "INITIALIZE",
+    "TOGGLE_PAUSE",
+    "SKIP"
 ]
 
 def authenticate(signature,data):
@@ -83,14 +86,12 @@ def action_queue():
                 return "Authentication Failed",401
         else:
             server=servers[id_hash]
-            try:
-                for action in ACTIONS:
-                    if flask.request.data.decode().startswith(action):
-                        server.action_queue.append(flask.request.data.decode())
-                        break
-            except IndexError:
-                return 500,"Invalid action index"
-            return "Action posted",200
+            for action in ACTIONS:
+                if flask.request.data.decode().startswith(action):
+                    server.action_queue.append(flask.request.data.decode())
+                    print(server.action_queue)
+                    return "Action posted",200
+            return 500,"Invalid action"
 
 @app.route("/current_song",methods = ['GET', 'POST'])
 def currently_playing():

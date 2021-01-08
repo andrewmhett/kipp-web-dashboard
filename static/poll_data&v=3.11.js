@@ -12,9 +12,9 @@ function update_current_song(song_info) {
     progress_percent *= 100;
     if (old_title != song_json.title) {
       table.style["background-color"] = "#2f3136";
-      if (platform==="desktop"){
+      if (platform === "desktop") {
         table.style["box-shadow"] = "0 0 10px #ccc";
-      }else{
+      } else {
         table.style["box-shadow"] = "0 0 20px #ccc";
       }
       old_title = song_json.title;
@@ -25,24 +25,25 @@ function update_current_song(song_info) {
       row.style["width"] = "100%";
       row.style["border-top"] = "0";
       var title = document.createElement("span");
-      var title_a=document.createElement("a");
-      title_a.style.display="inline-block";
-      title_a.href=song_json.link;
-      title_a.style.height="100%";
-      title_a.style.width="100%";
+      var title_a = document.createElement("a");
+      title_a.style.display = "inline-block";
+      title_a.href = song_json.link;
+      title_a.style.height = "100%";
+      title_a.style.width = "100%";
+      title_a.style["z-index"]="1";
       var title_cell = row.insertCell(0);
       title_cell.style["overflow"] = "hidden";
-      title_cell.style["display"]="block";
+      title_cell.style["display"] = "block";
       title.classList.add("song_link");
       title.innerHTML = song_json.title;
-      if (platform==="desktop"){
+      if (platform === "desktop") {
+        title_cell.style["width"] = "150px";
+        title_a.style["padding"]="2em";
+        title_a.style["margin"]="-2em";
+      } else {
         title_cell.style["width"] = "200px";
-      }else{
-        title_cell.style["width"] = "250px";
       }
-      title_cell.style["float"] = "bottom-left";
-      title_cell.style["vertical_align"] = "middle";
-      title_cell.style["height"]="100%";
+      title_cell.style["align"] = "center";
       if (platform === "desktop") {
         title.style["font-size"] = "20px";
       } else {
@@ -50,14 +51,16 @@ function update_current_song(song_info) {
       }
       title.style["white-space"] = "nowrap";
       title.style["overflow-x"] = "hidden";
-      title.style["overflow"]="visible";
-      title.style["display"]="inline-block";
-      title.style["text-overflow"]="ellipsis";
-      title_cell.id="title_cell";
+      title.style["overflow"] = "visible";
+      title.style["display"] = "inline-block";
+      title.style["text-overflow"] = "ellipsis";
+      title_cell.id = "title_cell";
       title_a.appendChild(title);
       title_cell.appendChild(title_a);
-      title_cell.children[0].animate({transform:["translateX(100%)","translateX(-"+(title_cell.scrollWidth+100).toString()+"px)"]}, {
-        iterations:Infinity,
+      title_cell.children[0].animate({
+        transform: ["translateX(100%)", "translateX(-" + (title_cell.scrollWidth + 100).toString() + "px)"]
+      }, {
+        iterations: Infinity,
         duration: 11000
       });
       title.style["float"] = "right";
@@ -80,7 +83,12 @@ function update_current_song(song_info) {
       current_time_cell.appendChild(current_time_span);
       var progress_cell = row.insertCell(2);
       progress_cell.id = "progress_cell";
-      progress_cell.style.width = "70%";
+      if (platform === "desktop") {
+        progress_cell.style.width = "70%";
+      } else {
+        progress_cell.style.width = "60%";
+      }
+
       var total_time_cell = row.insertCell(3);
       current_time_cell.style.width = "5%";
       var total_time_span = document.createElement("span");
@@ -95,11 +103,12 @@ function update_current_song(song_info) {
         total_time_span.style["font-size"] = "22.5px";
       }
       var progress_bar = document.createElement("div");
-      if (platform=="mobile"){
-        progress_bar.style["padding-top"]="5px";
-        progress_bar.style["padding-bottom"]="5px";
-      }else{
-        title_cell.style["padding-top"]="5px";
+      if (platform == "mobile") {
+        progress_bar.style["padding-top"] = "5px";
+        progress_bar.style["padding-bottom"] = "5px";
+        title_cell.style["transform"] = "translateY(-50%)";
+      } else {
+        title_cell.style["padding-top"] = "5px";
       }
       progress_bar.classList.add("progress_bar")
       progress_bar.style["text-align"] = "center";
@@ -126,28 +135,30 @@ function update_current_song(song_info) {
       progress_cell.appendChild(progress_bar);
       var button_cell = row.insertCell(4);
       button_cell.style["text-align"] = "center";
-      if (platform==="desktop"){
-        button_cell.style["width"]="200px";
-      }else{
-        button_cell.style["width"]="250px";
+      if (platform === "desktop") {
+        button_cell.style["width"] = "150px";
+        button_cell.style["transform"]="translateY(-10%)";
+      } else {
+        button_cell.style["width"] = "200px";
       }
-      button_cell.style.display="inline-block";
+      button_cell.style.display = "block";
       var button_table = document.createElement('table');
       button_table["margin-left"] = "1%";
       var button_row = button_table.insertRow(0);
       var pause_play_button = document.createElement('button');
-      pause_play_button.style["float"]="top-right";
+      pause_play_button.style["float"] = "top-right";
       var pause_play_img = document.createElement("img");
       pause_play_img.src = "static/800px-Play_Pause_icon_2283501.png";
       pause_play_img.style.height = "100%";
       pause_play_img.style.width = "auto";
-      pause_play_img.style.pause_play_button.appendChild(pause_play_img);
+      pause_play_img.id="toggle_pause_image";
+      pause_play_button.appendChild(pause_play_img);
       pause_play_button.classList.add('song_button');
       pause_play_button.style["background-color"] = "#b9bbbe";
       pause_play_button.id = "pause_play_button";
       button_row.insertCell(0).appendChild(pause_play_button);
       var skip_button = document.createElement('button');
-      skip_button.style["float"]="top-right";
+      skip_button.style["float"] = "top-right";
       skip_button.style["text-align"] = "center";
       var skip_img = document.createElement("img");
       skip_img.style["vertical-align"] = "middle";
@@ -157,6 +168,7 @@ function update_current_song(song_info) {
       skip_img.style.padding = "5px";
       skip_img.style["box-sizing"] = "border-box";
       skip_img.style.overflow = "hidden";
+      skip_img.id="skip_image";
       skip_button.appendChild(skip_img);
       skip_button.classList.add('song_button');
       skip_button.style["background-color"] = "#b9bbbe";
@@ -165,6 +177,7 @@ function update_current_song(song_info) {
       button_row.insertCell(1).appendChild(skip_button);
       button_cell.appendChild(button_table);
       button_cell.style["text-align"] = "right";
+      update_buttons();
     } else {
       var progress_cell = document.getElementById("progress_cell");
       while (progress_cell.firstChild) {
@@ -303,7 +316,7 @@ var id_hash = new URLSearchParams(queryString).get("id_hash");
 
 function poll_queue() {
   var xhttp = new XMLHttpRequest();
-  window.setTimeout(poll_queue, 333);
+  window.setTimeout(poll_queue, 500);
   xhttp.open("GET", "/song_queue?id_hash=" + id_hash, true);
   xhttp.timeout = 1000;
   xhttp.send();
@@ -318,7 +331,7 @@ function poll_queue() {
 
 function poll_current_song() {
   var xhttp = new XMLHttpRequest();
-  window.setTimeout(poll_current_song, 1000);
+  window.setTimeout(poll_current_song, 500);
   xhttp.open("GET", "/current_song?id_hash=" + id_hash, true);
   xhttp.timeout = 1000;
   xhttp.send();
