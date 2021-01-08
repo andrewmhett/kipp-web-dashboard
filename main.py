@@ -98,8 +98,8 @@ def currently_playing():
     global servers
     if flask.request.method=="GET":
         server=servers[id_hash]
-        ret_json="{"+'"title":"{0}","link":"{1}","seconds_elapsed":{2},"total_length":{3}'.format(
-        server.current_song,server.current_song_link,server.seconds_elapsed,server.length)+"}"
+        ret_json="{"+'"title":"{0}","link":"{1}","seconds_elapsed":{2},"total_length":{3},"current_timestamp":"{4}","total_timestamp":"{5}"'.format(
+        server.current_song,server.current_song_link,server.seconds_elapsed,server.length,server.current_timestamp,server.total_timestamp)+"}"
         return str(ret_json)
     else:
         if "signature" in flask.request.args.keys():
@@ -118,6 +118,8 @@ def currently_playing():
                     server.current_song_link=current_song_json["current_link"]
                     server.seconds_elapsed=current_song_json["seconds_elapsed"]
                     server.length=current_song_json["total_length"]
+                    server.current_timestamp=current_song_json["current_timestamp"]
+                    server.total_timestamp=current_song_json["total_timestamp"]
                 return "Authentication Succeeded",200
         return "Authentication Failed",401
 

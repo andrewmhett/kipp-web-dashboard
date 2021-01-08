@@ -7,3 +7,5 @@ class Server:
         self.seconds_elapsed=0
         self.length=0
         self.action_queue=["INITIALIZE"]
+        self.current_timestamp=""
+        self.total_timestamp=""
