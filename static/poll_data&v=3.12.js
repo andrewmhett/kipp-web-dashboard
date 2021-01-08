@@ -316,7 +316,7 @@ var id_hash = new URLSearchParams(queryString).get("id_hash");
 
 function poll_queue() {
   var xhttp = new XMLHttpRequest();
-  window.setTimeout(poll_queue, 500);
+  window.setTimeout(poll_queue, 300);
   xhttp.open("GET", "/song_queue?id_hash=" + id_hash, true);
   xhttp.timeout = 1000;
   xhttp.send();
@@ -331,7 +331,7 @@ function poll_queue() {
 
 function poll_current_song() {
   var xhttp = new XMLHttpRequest();
-  window.setTimeout(poll_current_song, 500);
+  window.setTimeout(poll_current_song, 300);
   xhttp.open("GET", "/current_song?id_hash=" + id_hash, true);
   xhttp.timeout = 1000;
   xhttp.send();
