@@ -9,3 +9,5 @@ class Server:
         self.action_queue=["INITIALIZE"]
         self.current_timestamp=""
         self.total_timestamp=""
+        self.verified_users=[]
+        self.members=[]

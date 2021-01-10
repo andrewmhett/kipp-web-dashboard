@@ -14,7 +14,11 @@ ACTIONS=[
     "REMOVE_SONG",
     "INITIALIZE",
     "TOGGLE_PAUSE",
-    "SKIP"
+    "SKIP",
+    "REWIND",
+    "VERIFY_USER",
+    "CHECK_2FA",
+    "REVOKE_VERIFICATION"
 ]
 
 def authenticate(signature,data):
@@ -51,19 +55,78 @@ def ensure_existence():
 
 @app.route("/")
 def landing_page():
+    ensure_existence()
     return flask.render_template('loading_page.html')
+
+@app.route("/verified_users",methods=['GET','POST'])
+def verified_users():
+    id_hash=flask.request.args["id_hash"]
+    global servers
+    ensure_existence()
+    if flask.request.method=="GET":
+        server=servers[id_hash]
+        return "<br>".join(server.verified_users)
+    else:
+        if "signature" in flask.request.args.keys():
+            auth_code=authenticate(flask.request.args["signature"],flask.request.data)
+            if auth_code==0:
+                server=servers[id_hash]
+                action_str = flask.request.data.decode()
+                if action_str.startswith("ADD"):
+                    server.verified_users.append(action_str.split(",->")[1])
+                else:
+                    server.verified_users.remove(action_str.split(",->")[1])
+                return "Authentication Succeeded",200
+            else:
+                return "Authentication Failed",401
+
+@app.route("/members",methods=['GET','POST'])
+def members():
+    id_hash=flask.request.args["id_hash"]
+    global servers
+    ensure_existence()
+    if flask.request.method=="GET":
+        server=servers[id_hash]
+        return "<br>".join(server.members)
+    else:
+        if "signature" in flask.request.args.keys():
+            auth_code=authenticate(flask.request.args["signature"],flask.request.data)
+            if auth_code==0:
+                server=servers[id_hash]
+                server.members=flask.request.data.decode().split("<br>")
+                return "Authentication Succeeded",200
+            else:
+                return "Authentication Failed",401
+
+@app.route("/verification_page_desktop")
+def verification_page_desktop():
+    if flask.request.args["id_hash"] != "null":
+        if flask.request.args["id_hash"] in servers.keys():
+            return flask.render_template('verification_page_desktop.html')
+    return "Server hash invalid",404
+
+@app.route("/verification_page_mobile")
+def verification_page_mobile():
+    if flask.request.args["id_hash"] != "null":
+        if flask.request.args["id_hash"] in servers.keys():
+            return flask.render_template('verification_page_mobile.html')
+    return "Server hash invalid",404
 
 @app.route("/dashboard_desktop")
 def dashboard_desktop():
     if flask.request.args["id_hash"] != "null":
-        return flask.render_template('dashboard_desktop.html')
-    return "No server hash specified",404
+        ensure_existence()
+        if flask.request.args["id_hash"] in servers.keys():
+            return flask.render_template('dashboard_desktop.html')
+    return "Server hash invalid",404
 
 @app.route("/dashboard_mobile")
 def dashboard_mobile():
     if flask.request.args["id_hash"] != "null":
-        return flask.render_template('dashboard_mobile.html')
-    return "No server hash specified",404
+        ensure_existence()
+        if flask.request.args["id_hash"] in servers.keys():
+            return flask.render_template('dashboard_mobile.html')
+    return "Server hash invalid",404
 
 @app.route("/action_queue",methods=['GET','POST'])
 def action_queue():
@@ -89,7 +152,6 @@ def action_queue():
             for action in ACTIONS:
                 if flask.request.data.decode().startswith(action):
                     server.action_queue.append(flask.request.data.decode())
-                    print(server.action_queue)
                     return "Action posted",200
             return 500,"Invalid action"
 

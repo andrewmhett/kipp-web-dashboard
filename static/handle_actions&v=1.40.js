@@ -114,6 +114,17 @@ function update_buttons(){
           }
         }
       }
+      else if (buttons[i].id === "rewind_button"){
+        buttons[i].onclick=function(){
+          if (active_button === null){
+            var button_el = (event.target || event.srcElement);
+            active_button=button_el;
+            initial_button_color="#b9bbbe";
+            button_el.style["background-color"]="#292b2e";
+            rewind_action();
+          }
+        }
+      }
     }
   }
 }
@@ -140,6 +151,10 @@ function toggle_pause_action(){
 
 function skip_action(){
   post_action("SKIP");
+}
+
+function rewind_action(){
+  post_action("REWIND");
 }
 
 update_buttons();

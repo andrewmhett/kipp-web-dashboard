@@ -1,12 +1,14 @@
 var old_queue = "";
 var platform = document.getElementById("platform-tag").content;
 var old_title = "";
+var no_songs_playing=false;
 
 function update_current_song(song_info) {
   var table = document.getElementById("currently_playing_table");
   var song_json = JSON.parse(song_info);
   var num_rows = table.rows.length;
   if (song_json.title.length > 0) {
+    no_songs_playing=false;
     var num_rows = table.rows.length;
     var progress_percent = song_json.seconds_elapsed / song_json.total_length;
     progress_percent *= 100;
@@ -38,9 +40,11 @@ function update_current_song(song_info) {
       title.innerHTML = song_json.title;
       if (platform === "desktop") {
         title_cell.style["width"] = "150px";
+        title_cell.style["transform"]="translateY(10%)";
         title_a.style["padding"]="2em";
         title_a.style["margin"]="-2em";
       } else {
+        title_cell.style["transform"]="translateY(15%)";
         title_cell.style["width"] = "200px";
       }
       title_cell.style["align"] = "center";
@@ -106,7 +110,6 @@ function update_current_song(song_info) {
       if (platform == "mobile") {
         progress_bar.style["padding-top"] = "5px";
         progress_bar.style["padding-bottom"] = "5px";
-        title_cell.style["transform"] = "translateY(-50%)";
       } else {
         title_cell.style["padding-top"] = "5px";
       }
@@ -115,7 +118,11 @@ function update_current_song(song_info) {
       var progress_div = document.createElement("div");
       progress_div.style["text-align"] = "left";
       progress_div.style.width = progress_percent.toString() + "%";
-      progress_div.style.height = "100%";
+      if (platform==="mobile"){
+        progress_div.style.height = "35px";
+      }else{
+        progress_div.style.height = "20px";
+      }
       progress_div.style["background-color"] = "#7388DA";
       progress_div.style["text-align"] = "center";
       progress_bar.appendChild(progress_div);
@@ -135,9 +142,9 @@ function update_current_song(song_info) {
       progress_cell.appendChild(progress_bar);
       var button_cell = row.insertCell(4);
       button_cell.style["text-align"] = "center";
+      button_cell.style["transform"]="translateY(-30%)";
       if (platform === "desktop") {
         button_cell.style["width"] = "150px";
-        button_cell.style["transform"]="translateY(-10%)";
       } else {
         button_cell.style["width"] = "200px";
       }
@@ -145,6 +152,26 @@ function update_current_song(song_info) {
       var button_table = document.createElement('table');
       button_table["margin-left"] = "1%";
       var button_row = button_table.insertRow(0);
+      var rewind_button = document.createElement('button');
+      rewind_button.style["float"] = "top-right";
+      rewind_button.style["text-align"] = "center";
+      var rewind_img = document.createElement("img");
+      rewind_img.style["vertical-align"] = "top";
+      rewind_img.src = "/static/800px-Fast_backward_font_awesome.png"
+      rewind_img.style.height = "100%";
+      rewind_img.style.width = "auto";
+      rewind_img.style.padding = "5px";
+      rewind_img.style["box-sizing"] = "border-box";
+      rewind_img.style.overflow = "hidden";
+      rewind_img.id="rewind_image";
+      rewind_button.appendChild(rewind_img);
+      rewind_button.classList.add('song_button');
+      rewind_button.style["background-color"] = "#b9bbbe";
+      rewind_button.style["text-align"] = "right";
+      rewind_button.id = "rewind_button";
+      var rewind_cell = button_row.insertCell(0);
+      rewind_cell.appendChild(rewind_button);
+      rewind_cell.style.display="inline-block";
       var pause_play_button = document.createElement('button');
       pause_play_button.style["float"] = "top-right";
       var pause_play_img = document.createElement("img");
@@ -156,12 +183,14 @@ function update_current_song(song_info) {
       pause_play_button.classList.add('song_button');
       pause_play_button.style["background-color"] = "#b9bbbe";
       pause_play_button.id = "pause_play_button";
-      button_row.insertCell(0).appendChild(pause_play_button);
+      var pause_play_cell = button_row.insertCell(1);
+      pause_play_cell.appendChild(pause_play_button);
+      pause_play_cell.style.display="inline-block";
       var skip_button = document.createElement('button');
       skip_button.style["float"] = "top-right";
       skip_button.style["text-align"] = "center";
       var skip_img = document.createElement("img");
-      skip_img.style["vertical-align"] = "middle";
+      skip_img.style["vertical-align"] = "top";
       skip_img.src = "/static/800px-Fast_forward_font_awesome.png"
       skip_img.style.height = "100%";
       skip_img.style.width = "auto";
@@ -174,7 +203,9 @@ function update_current_song(song_info) {
       skip_button.style["background-color"] = "#b9bbbe";
       skip_button.style["text-align"] = "right";
       skip_button.id = "skip_button";
-      button_row.insertCell(1).appendChild(skip_button);
+      var skip_cell = button_row.insertCell(2);
+      skip_cell.appendChild(skip_button);
+      skip_cell.style.display="inline-block";
       button_cell.appendChild(button_table);
       button_cell.style["text-align"] = "right";
       update_buttons();
@@ -187,6 +218,10 @@ function update_current_song(song_info) {
       progress_bar.classList.add("progress_bar")
       progress_bar.style["text-align"] = "center";
       progress_bar.id = "progress_bar";
+      if (platform == "mobile") {
+        progress_cell.style["padding-top"] = "10px";
+        progress_cell.style["padding-bottom"] = "10px";
+      }
       var progress_div = document.createElement("div");
       progress_div.style["text-align"] = "left";
       progress_div.style.width = progress_percent.toString() + "%";
@@ -212,12 +247,102 @@ function update_current_song(song_info) {
       current_time_span.innerHTML = song_json.current_timestamp;
     }
   } else {
-    for (var i = 0; i < num_rows; i++) {
-      table.deleteRow(0);
+    if (!no_songs_playing){
+      no_songs_playing=true;
+      for (var i = 0; i < num_rows; i++) {
+        table.deleteRow(0);
+      }
+      var row=table.insertRow(0);
+      var span_cell=row.insertCell(0);
+      var info_span=document.createElement("span");
+      info_span.innerHTML="No Songs Playing";
+      info_span.classList.add("dark_embed");
+      span_cell.style.width="100%";
+      span_cell.style["text-align"]="left";
+      span_cell.appendChild(info_span);
+      var button_cell = row.insertCell(1);
+      button_cell.position="absolute";
+      button_cell.style.left="0";
+      button_cell.style.right="0";
+      button_cell.style["margin-left"]="auto";
+      button_cell.style["margin-right"]="auto";
+      button_cell.style["text-align"] = "center";
+      button_cell.style["float"]="right";
+      button_cell.style.display = "block";
+      var button_table = document.createElement('table');
+      button_table["margin-left"] = "1%";
+      if (platform === "desktop") {
+        button_cell.style["width"] = "150px";
+        button_table.style["transform"]="translate(2.5%,-10%)";
+        button_cell.style["padding-top"]="7px";
+        button_cell.style["padding-bottom"]="7px";
+      } else {
+        button_cell.style["width"] = "200px";
+        button_table.style["transform"]="translate(2%,-35%)";
+        button_cell.style["padding-top"]="12px";
+        button_cell.style["padding-bottom"]="12px";
+      }
+      var button_row = button_table.insertRow(0);
+      var rewind_button = document.createElement('button');
+      rewind_button.style["float"] = "top-right";
+      rewind_button.style["text-align"] = "center";
+      var rewind_img = document.createElement("img");
+      rewind_img.style["vertical-align"] = "top";
+      rewind_img.src = "/static/800px-Fast_backward_font_awesome.png"
+      rewind_img.style.height = "100%";
+      rewind_img.style.width = "auto";
+      rewind_img.style.padding = "5px";
+      rewind_img.style["box-sizing"] = "border-box";
+      rewind_img.style.overflow = "hidden";
+      rewind_img.id="rewind_image";
+      rewind_button.appendChild(rewind_img);
+      rewind_button.classList.add('song_button');
+      rewind_button.style["background-color"] = "#b9bbbe";
+      rewind_button.style["text-align"] = "right";
+      rewind_button.id = "rewind_button";
+      var rewind_button_cell = button_row.insertCell(0);
+      rewind_button_cell.appendChild(rewind_button);
+      rewind_button_cell.style.display="inline-block";
+      var pause_play_button = document.createElement('button');
+      pause_play_button.style["float"] = "top-right";
+      var pause_play_img = document.createElement("img");
+      pause_play_img.src = "static/800px-Play_Pause_icon_2283501.png";
+      pause_play_img.style.height = "100%";
+      pause_play_img.style.width = "auto";
+      pause_play_img.id="toggle_pause_image";
+      pause_play_button.appendChild(pause_play_img);
+      pause_play_button.classList.add('song_button');
+      pause_play_button.style["background-color"] = "#b9bbbe";
+      pause_play_button.id = "pause_play_button";
+      var pause_play_cell = button_row.insertCell(1);
+      pause_play_cell.style.display="inline-block";
+      pause_play_cell.appendChild(pause_play_button);
+      var skip_button = document.createElement('button');
+      skip_button.style["float"] = "top-right";
+      skip_button.style["text-align"] = "center";
+      var skip_img = document.createElement("img");
+      skip_img.style["vertical-align"] = "top";
+      skip_img.src = "/static/800px-Fast_forward_font_awesome.png"
+      skip_img.style.height = "100%";
+      skip_img.style.width = "auto";
+      skip_img.style.padding = "5px";
+      skip_img.style["box-sizing"] = "border-box";
+      skip_img.style.overflow = "hidden";
+      skip_img.id="skip_image";
+      skip_button.appendChild(skip_img);
+      skip_button.classList.add('song_button');
+      skip_button.style["background-color"] = "#b9bbbe";
+      skip_button.style["text-align"] = "right";
+      skip_button.id = "skip_button";
+      var skip_cell = button_row.insertCell(2);
+      skip_cell.style.display="inline-block";
+      skip_cell.appendChild(skip_button);
+      button_cell.appendChild(button_table);
+      button_cell.style["text-align"] = "right";
+      row.insertCell(2).style.width="100%";
+      update_buttons();
+      old_title = "";
     }
-    table.style["background-color"] = "black";
-    table.style["box-shadow"] = "0 0 0px #0000";
-    old_title = "";
   }
 }
 
@@ -243,7 +368,6 @@ function update_queue(queue) {
     table.style["background-color"] = "black";
     var row = table.insertRow(0);
     var cell = row.insertCell(0);
-    cell.classList.add('embed');
     var empty_queue_text = document.createElement('span');
     empty_queue_text.innerHTML = "No Songs in Queue";
     empty_queue_text.classList.add("dark_embed");
@@ -339,6 +463,28 @@ function poll_current_song() {
     if (this.readyState === 4) {
       if (this.status === 200) {
         update_current_song(this.response);
+      }
+    }
+  }
+}
+
+function poll_voice_channel() {
+  var xhttp = new XMLHttpRequest();
+  window.setTimeout(poll_current_song, 300);
+  xhttp.open("GET", "/voice_members?id_hash=" + id_hash, true);
+  xhttp.timeout = 1000;
+  xhttp.send();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState === 4) {
+      if (this.status === 200) {
+        if (old_title!==""){
+          for (var i=0;i<this.response.split("<br>").length;i++){
+            if (this.response.split("<br>")[i]==user_id){
+              return;
+            }
+          }
+          //USER LOCKOUT
+        }
       }
     }
   }
